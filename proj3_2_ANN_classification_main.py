@@ -65,7 +65,7 @@ for k, (train_index, test_index) in enumerate(CV.split(X,y)):
     X_test = X[test_index]
     y_test = y[test_index]
     
-    n_hidden_units = range(1, 4)
+    n_hidden_units = range(1, 11)
     internal_cross_validation = 3
     opt_val_err, opt_hidden_unit = ANN_validate(X_train, y_train, n_hidden_units, internal_cross_validation)
     opt_val_errs.append(opt_val_err)
