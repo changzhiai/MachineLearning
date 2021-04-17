@@ -20,11 +20,11 @@ X = X.squeeze()
 # X = X[:,range(0,8)].astype(float)
 X = X.astype(float)
 N, M = X.shape
-print(X.shape)
-X = X - np.ones((N,1)) * X.mean(axis=0)
 
 #normalizing matrix
+X = X - np.ones((N,1)) * X.mean(axis=0)
 X = X*(1/np.std(X,axis=0))
+print(X.shape)
 print(X)
 
 # attributeNames = attributeNames1[range(0,8)].tolist()

@@ -19,29 +19,19 @@ y = y.squeeze()
 y = np.reshape(y,(244,1))
 
 X = X.squeeze()
-X = X[:,range(0,8)].astype(float)
+X = X[:,range(0,9)].astype(float)
 X = X.astype(float)
-
 N,M = X.shape 
 
-X = X - np.ones((N,1)) * X.mean(axis=0)
-
 #normalizing matrix
+X = X - np.ones((N,1)) * X.mean(axis=0)
 X = X*(1/np.std(X,axis=0))
-
+print(X.shape)
 # Add offset attribute
 # X = np.concatenate((np.ones((X.shape[0],1)),X),1).astype('float')
 # print(X.shape)
 # attributeNames = [u'Offset']+attributeNames1
 # M = M+1
-
-#Downsample: X = X[1:20,:] y = y[1:20,:]
-N, M = X.shape
-print(X.shape)
-# # print(np.reshape(y,(244,1)))
-# # print(np.asmatrix(y).shape)
-# print(attributeNames1.tolist())
-# assert False
 
 attributeNames = attributeNames1[range(0,8)].tolist()
 # Normalize data
@@ -73,7 +63,7 @@ for k, (train_index, test_index) in enumerate(CV.split(X,y)):
     X_test = X[test_index]
     y_test = y[test_index]
     
-    n_hidden_units = range(1, 11)
+    n_hidden_units = range(1, 3)
     internal_cross_validation = 10
     opt_val_err, opt_hidden_unit = ANN_validate(X_train, y_train, n_hidden_units, internal_cross_validation)
     opt_val_errs.append(opt_val_err)
@@ -136,9 +126,6 @@ draw_neural_net(weights, biases, tf, attribute_names=attributeNames)
 
 # Print the average classification error rate
 print('\nEstimated generalization error, RMSE: {0}'.format(round(np.sqrt(np.mean(errors)), 4)))
-
-print('\nOptimized errors: {}'.format(opt_val_errs))
-print('\nOptimized hidden units: {}'.format(opt_hidden_units))
       
 # When dealing with regression outputs, a simple way of looking at the quality
 # of predictions visually is by plotting the estimated value as a function of 
@@ -158,3 +145,9 @@ plt.ylabel('Estimated value')
 plt.grid()
 
 plt.show()    
+
+print('\n +++++++ output ++++++++')
+print('Optimized hidden units: {}'.format(opt_hidden_units))
+print('test errors: {}'.format(errors))
+
+

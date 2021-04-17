@@ -57,6 +57,7 @@ sigma = np.empty((K, M-1))
 w_noreg = np.empty((M,K))
 
 k=0
+opt_lambdas = []
 for train_index, test_index in CV.split(X,y):
     
     # extract training and test set for current CV fold
@@ -67,7 +68,7 @@ for train_index, test_index in CV.split(X,y):
     internal_cross_validation = 10
     
     opt_val_err, opt_lambda, mean_w_vs_lambda, train_err_vs_lambda, test_err_vs_lambda = rlr_validate(X_train, y_train, lambdas, internal_cross_validation)
-
+    opt_lambdas.append(opt_lambda)
     # Standardize outer fold based on training set, and save the mean and standard
     # deviations since they're part of the model (they would be needed for
     # making new predictions) - for brevity we won't always store these in the scripts
@@ -147,4 +148,11 @@ print('Weights in last fold:')
 for m in range(M):
     print('{:>15} {:>15}'.format(attributeNames[m], np.round(w_rlr[m,-1],2)))
 
-print('Ran Exercise 8.1.1')
+print('\n +++++++ baseline output ++++++++')
+print('test errors: {}'.format(Error_test_nofeatures))
+
+
+print('\n +++++++linear regression output ++++++++')
+print('Optimized lambdas: {}'.format(opt_lambdas))
+print('test errors: {}'.format(Error_test_rlr))
+
