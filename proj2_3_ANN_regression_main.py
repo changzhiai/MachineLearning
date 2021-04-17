@@ -33,7 +33,7 @@ print(X.shape)
 # attributeNames = [u'Offset']+attributeNames1
 # M = M+1
 
-attributeNames = attributeNames1[range(0,8)].tolist()
+attributeNames = attributeNames1[range(0,9)].tolist()
 # Normalize data
 # X = stats.zscore(X);
 
@@ -43,7 +43,7 @@ n_replicates = 2        # number of networks trained in each k-fold
 max_iter = 10000         # stop criterion 2 (max epochs in training)
 
 # K-fold crossvalidation
-K = 10                   # only five folds to speed up this example
+K = 2                   # only five folds to speed up this example
 CV = model_selection.KFold(K, shuffle=True)
 # Make figure for holding summaries (errors and learning curves)
 summaries, summaries_axes = plt.subplots(1,2, figsize=(10,5))
@@ -64,7 +64,7 @@ for k, (train_index, test_index) in enumerate(CV.split(X,y)):
     y_test = y[test_index]
     
     n_hidden_units = range(1, 3)
-    internal_cross_validation = 10
+    internal_cross_validation = 2
     opt_val_err, opt_hidden_unit = ANN_validate(X_train, y_train, n_hidden_units, internal_cross_validation)
     opt_val_errs.append(opt_val_err)
     opt_hidden_units.append(opt_hidden_unit)
@@ -146,8 +146,8 @@ plt.grid()
 
 plt.show()    
 
-print('\n +++++++ output ++++++++')
+print('\n +++++++ ANN regression output ++++++++')
 print('Optimized hidden units: {}'.format(opt_hidden_units))
-print('test errors: {}'.format(errors))
+print('test errors: {}'.format(round(100*np.mean(errors),4)))
 
 
