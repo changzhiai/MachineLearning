@@ -51,10 +51,11 @@ summaries, summaries_axes = plt.subplots(1,2, figsize=(10,5))
 color_list = ['tab:orange', 'tab:green', 'tab:purple', 'tab:brown', 'tab:pink',
               'tab:gray', 'tab:olive', 'tab:cyan', 'tab:red', 'tab:blue']
     
-
+n_hidden_units = range(1, 2)
 opt_val_errs = []
 opt_hidden_units = []
-errors = [] # make a list for storing generalizaition error in each loop
+# errors = [] # make a list for storing generalizaition error in each loop
+mse = np.empty(K)
 for k, (train_index, test_index) in enumerate(CV.split(X,y)): 
     print('\nCrossvalidation fold: {0}/{1}'.format(k+1,K))
     
@@ -63,7 +64,6 @@ for k, (train_index, test_index) in enumerate(CV.split(X,y)):
     X_test = X[test_index]
     y_test = y[test_index]
     
-    n_hidden_units = range(1, 3)
     internal_cross_validation = 2
     opt_val_err, opt_hidden_unit = ANN_validate(X_train, y_train, n_hidden_units, internal_cross_validation)
     opt_val_errs.append(opt_val_err)
@@ -100,8 +100,8 @@ for k, (train_index, test_index) in enumerate(CV.split(X,y)):
     
     # Determine errors and errors
     se = (y_test_est.float()-y_test.float())**2 # squared error
-    mse = (sum(se).type(torch.float)/len(y_test)).data.numpy() #mean
-    errors.append(mse) # store error rate for current CV fold 
+    mse[k] = (sum(se).type(torch.float)/len(y_test)).data.numpy() #mean
+    # errors.append(mse) # store error rate for current CV fold 
     
     # Display the learning curve for the best net in the current fold
     h, = summaries_axes[0].plot(learning_curve, color=color_list[k])
@@ -112,7 +112,7 @@ for k, (train_index, test_index) in enumerate(CV.split(X,y)):
     summaries_axes[0].set_title('optimized hidden unit(s): {} '.format(opt_hidden_units))
     
 # Display the MSE across folds
-summaries_axes[1].bar(np.arange(1, K+1), np.squeeze(np.asarray(errors)), color=color_list)
+summaries_axes[1].bar(np.arange(1, K+1), mse, color=color_list)
 summaries_axes[1].set_xlabel('Fold')
 summaries_axes[1].set_xticks(np.arange(1, K+1))
 summaries_axes[1].set_ylabel('MSE')
@@ -125,7 +125,7 @@ tf =  [str(net[i]) for i in [1,2]]
 draw_neural_net(weights, biases, tf, attribute_names=attributeNames)
 
 # Print the average classification error rate
-print('\nEstimated generalization error, RMSE: {0}'.format(round(np.sqrt(np.mean(errors)), 4)))
+# print('\nEstimated generalization error, RMSE: {0}'.format(round(np.sqrt(np.mean(errors)), 4)))
       
 # When dealing with regression outputs, a simple way of looking at the quality
 # of predictions visually is by plotting the estimated value as a function of 
@@ -148,6 +148,6 @@ plt.show()
 
 print('\n +++++++ ANN regression output ++++++++')
 print('Optimized hidden units: {}'.format(opt_hidden_units))
-print('test errors: {}'.format(round(100*np.mean(errors),4)))
+print('test errors: {}'.format(mse))
 
 

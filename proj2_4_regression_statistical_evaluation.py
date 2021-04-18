@@ -37,7 +37,7 @@ M = M+1
 attributeNames = attributeNames1[range(0,9)].tolist()
 
 ## Crossvalidation
-K = 10
+K = 5
 CV = model_selection.KFold(K, shuffle=True)
 
 # Initialize variables for linear regression
@@ -54,10 +54,14 @@ w_noreg = np.empty((M,K))
 opt_lambdas = []
 
 # Initialize variables for baseline and ANN regression
+n_hidden_units = range(1, 10)
+
 n_replicates = 2        # number of networks trained in each k-fold
 max_iter = 10000         # stop criterion 2 (max epochs in training)
 opt_hidden_units = []
-errors = [] # make a list for storing generalizaition error in each loop
+# errors = [] # make a list for storing generalizaition error in each loop
+mse = np.empty(K)
+
 
 k=0
 yhat = []
@@ -73,9 +77,9 @@ for train_index, test_index in CV.split(X,y):
     y_train = y[train_index]
     X_test = X[test_index]
     y_test = y[test_index]
-    y_true.append(y_test)
+    y_true.append(y_test.reshape(-1,1))
     
-    internal_cross_validation = 10
+    internal_cross_validation = 5
     
     mu[k, :] = np.mean(X_train[:, 1:], 0)
     sigma[k, :] = np.std(X_train[:, 1:], 0)
@@ -114,7 +118,7 @@ for train_index, test_index in CV.split(X,y):
     
     
     ##### ANN regression part #####
-    n_hidden_units = range(1, 11)
+    # n_hidden_units = range(1, 2)
     # internal_cross_validation = 10
     y_train = np.reshape(y_train,(-1,1))
     y_test = np.reshape(y_test,(-1,1))
@@ -124,9 +128,9 @@ for train_index, test_index in CV.split(X,y):
     
     # Extract training and test set for current CV fold, convert to tensors
     X_train_tensor = torch.Tensor(X[train_index,:])
-    y_train_tensor = torch.Tensor(y[train_index])
+    y_train_tensor = torch.Tensor(np.reshape(y[train_index],(-1,1)))
     X_test_tensor = torch.Tensor(X[test_index,:])
-    y_test_tensor = torch.Tensor(y[test_index])
+    y_test_tensor = torch.Tensor(np.reshape(y[test_index],(-1,1)))
     
     # Define the model, see also Exercise 8.2.2-script for more information.
     model = lambda: torch.nn.Sequential(
@@ -153,8 +157,9 @@ for train_index, test_index in CV.split(X,y):
     
     # Determine errors and errors
     se = (y_test_est.float()-y_test_tensor.float())**2 # squared error
-    mse = (sum(se).type(torch.float)/len(y_test_tensor)).data.numpy() #mean
-    errors.append(mse) # store error rate for current CV fold 
+    mse[k] = (sum(se).type(torch.float)/len(y_test_tensor)).data.numpy() #mean
+    # mse[k] = (sum(se).type(torch.float)/len(y_test)).data.numpy() #mean
+    # errors.append(mse) # store error rate for current CV fold 
     
     yhatC = y_test_est.detach().numpy()
     
@@ -168,15 +173,16 @@ for train_index, test_index in CV.split(X,y):
 
     
 print('\n +++++++ baseline output ++++++++')
-print('test errors: {}'.format(Error_test_nofeatures))
+print('test errors: {}'.format(Error_test_nofeatures.squeeze()))
 
 print('\n +++++++ linear regression output ++++++++')
 print('Optimized lambdas: {}'.format(opt_lambdas))
-print('test errors: {}'.format(Error_test_rlr))
+print('test errors: {}'.format(Error_test_rlr.squeeze()))
 
 print('\n +++++++ ANN regression output ++++++++')
 print('Optimized hidden units: {}'.format(opt_hidden_units))
-print('test errors: {}'.format(round(100*np.mean(errors),4)))
+print('test errors: {}'.format(mse))
+# print('test errors: {}'.format(round(100*np.mean(errors),4)))
 
 # setup II
 alpha = 0.05
@@ -185,7 +191,35 @@ p_AB_setupII, CI_AB_setupII = correlated_ttest(rAB, rho, alpha=alpha)
 p_BC_setupII, CI_BC_setupII = correlated_ttest(rBC, rho, alpha=alpha)
 p_AC_setupII, CI_AC_setupII = correlated_ttest(rAC, rho, alpha=alpha)
 
-print('\n +++++++ p value and confidence intervel ++++++++')
+print('\n +++++++ p value and confidence intervel for setup II ++++++++')
 print('Baseline vs. linear regression: {},\n {}'.format(p_AB_setupII, CI_AB_setupII))
 print('linear regression vs. ANN regression: {},\n {}'.format(p_BC_setupII, CI_BC_setupII))
 print('Baseline vs ANN regression: {},{}'.format(p_AC_setupII, CI_AC_setupII))
+
+
+# setup I
+alpha = 0.05
+y_true = np.concatenate(y_true)[:,0]
+yhat = np.concatenate(yhat)
+
+zA = np.abs(y_true - yhat[:,0] ) ** loss
+zB = np.abs(y_true - yhat[:,1] ) ** loss
+zC = np.abs(y_true - yhat[:,2] ) ** loss
+zAB = zA - zB
+zBC = zB - zC
+zAC = zA - zC
+
+CI_AB_setupI = st.t.interval(1 - alpha, len(zAB) - 1, loc=np.mean(zAB), scale=st.sem(zAB))  # Confidence interval
+p_AB_setupI = st.t.cdf(-np.abs(np.mean(zAB)) / st.sem(zAB), df=len(zAB) - 1)  # p-value
+
+CI_BC_setupI = st.t.interval(1 - alpha, len(zBC) - 1, loc=np.mean(zBC), scale=st.sem(zBC))  # Confidence interval
+p_BC_setupI = st.t.cdf(-np.abs(np.mean(zBC)) / st.sem(zBC), df=len(zBC) - 1)  # p-value
+
+CI_AC_setupI = st.t.interval(1 - alpha, len(zAC) - 1, loc=np.mean(zAC), scale=st.sem(zAC))  # Confidence interval
+p_AC_setupI = st.t.cdf(-np.abs(np.mean(zAC)) / st.sem(zAC), df=len(zAC) - 1)  # p-value
+
+print('\n +++++++ p value and confidence intervel for setup I ++++++++')
+print('Baseline vs. linear regression: {},\n {}'.format(p_AB_setupI, CI_AB_setupI))
+print('linear regression vs. ANN regression: {},\n {}'.format(p_BC_setupI, CI_BC_setupI))
+print('Baseline vs ANN regression: {},{}'.format(p_AC_setupI, CI_AC_setupI))
+

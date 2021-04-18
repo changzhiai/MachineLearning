@@ -12,18 +12,14 @@ import sklearn.linear_model as lm
 from sklearn import model_selection
 from toolbox_02450 import rlr_validate
 
-y = X[:,9].astype('float')
+y = X2[:,9].astype('float')
 y = y.squeeze()
 
-X = X[:,range(0,9)].astype(float) ## select only metereologcal datas
-
+X = X2[:,range(0,9)].astype(float) ## select only metereologcal datas
 N,M = X.shape 
 
-X = X - np.ones((N,1)) * X.mean(axis=0)
-#print(X1.mean(axis=0)) #obtain mean value along column, will get 10 numbers, array(1, M)
-#print(Y1)
-
 #normalizing matrix
+X = X - np.ones((N,1)) * X.mean(axis=0)
 X = X*(1/np.std(X,axis=0))
 
 # Add offset attribute
@@ -31,8 +27,6 @@ X = np.concatenate((np.ones((X.shape[0],1)),X),1).astype('float')
 print(X.shape)
 attributeNames = [u'Offset']+attributeNames1
 M = M+1
-
-
 
 # test_proportion = 0.2
 # X_train, X_test, y_train, y_test = model_selection.train_test_split(X,y1,test_size=test_proportion)
