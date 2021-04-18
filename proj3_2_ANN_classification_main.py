@@ -152,7 +152,10 @@ plt.grid()
 plt.show()
 
 
-print('\n +++++++ logistic regression for classification output ++++++++')
+print('\n +++++++ ANN regression for classification output ++++++++')
 print('Optimized hidden units: {}'.format(opt_hidden_units))
 print('test errors: {}'.format(errors))
+
+
+
 

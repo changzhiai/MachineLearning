@@ -37,7 +37,7 @@ M = M+1
 attributeNames = attributeNames1[range(0,9)].tolist()
 
 ## Crossvalidation
-K = 2
+K = 10
 CV = model_selection.KFold(K, shuffle=True)
 
 # Initialize variables for linear regression
@@ -53,7 +53,7 @@ sigma = np.empty((K, M-1))
 w_noreg = np.empty((M,K))
 opt_lambdas = []
 
-# Initialize variables for ANN regression
+# Initialize variables for baseline and ANN regression
 n_replicates = 2        # number of networks trained in each k-fold
 max_iter = 10000         # stop criterion 2 (max epochs in training)
 opt_hidden_units = []
@@ -75,7 +75,7 @@ for train_index, test_index in CV.split(X,y):
     y_test = y[test_index]
     y_true.append(y_test)
     
-    internal_cross_validation = 2
+    internal_cross_validation = 10
     
     mu[k, :] = np.mean(X_train[:, 1:], 0)
     sigma[k, :] = np.std(X_train[:, 1:], 0)
@@ -114,11 +114,11 @@ for train_index, test_index in CV.split(X,y):
     
     
     ##### ANN regression part #####
-    n_hidden_units = range(1, 2)
+    n_hidden_units = range(1, 11)
     # internal_cross_validation = 10
     y_train = np.reshape(y_train,(-1,1))
     y_test = np.reshape(y_test,(-1,1))
-    opt_val_err2, opt_hidden_unit = ANN_validate(X_train, np.reshape(y_train,(-1,1)), n_hidden_units, internal_cross_validation)
+    opt_val_err2, opt_hidden_unit = ANN_validate(X_train, y_train, n_hidden_units, internal_cross_validation)
     # opt_val_err2, opt_hidden_unit = ANN_validate(X_train, y_train, n_hidden_units, internal_cross_validation)
     opt_hidden_units.append(opt_hidden_unit)
     
@@ -156,17 +156,15 @@ for train_index, test_index in CV.split(X,y):
     mse = (sum(se).type(torch.float)/len(y_test_tensor)).data.numpy() #mean
     errors.append(mse) # store error rate for current CV fold 
     
-    print(y_test_est)
-    print(y_test_est.dtype)
     yhatC = y_test_est.detach().numpy()
-    print(y_test_est)
-    print(y_test_est.dtype)
     
     loss = 2
     yhat.append( np.concatenate([yhatA, yhatB, yhatC], axis=1) )
     rAB.append( np.mean( np.abs( yhatA-y_test ) ** loss - np.abs( yhatB-y_test) ** loss ) )
     rBC.append( np.mean( np.abs( yhatB-y_test ) ** loss - np.abs( yhatC-y_test) ** loss ) )
     rAC.append( np.mean( np.abs( yhatA-y_test ) ** loss - np.abs( yhatC-y_test) ** loss ) )
+    
+    k+=1
 
     
 print('\n +++++++ baseline output ++++++++')
