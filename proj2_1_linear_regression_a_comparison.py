@@ -7,7 +7,7 @@ Created on Sun Apr 18 16:29:33 2021
 
 from proj1_1_load_data import *
 from matplotlib.pylab import (figure, semilogx, loglog, xlabel, ylabel, legend, 
-                           title, subplot, show, grid)
+                           title, subplot, show, grid, xticks, yticks)
 import sklearn.linear_model as lm
 from sklearn import model_selection
 from toolbox_02450 import rlr_validate
@@ -16,14 +16,15 @@ from toolbox_02450 import rlr_validate
 lambdas = np.power(10.,range(-5,9))
 
 
-train_err_vs_lambda = np.empty(len(lambdas), (len(range(0,9))))
-test_err_vs_lambda = np.empty(len(lambdas),(len(range(0,9))))
+train_err_vs_lambda = np.empty((len(lambdas), len(range(0,9))))
+test_err_vs_lambda = np.empty((len(lambdas),len(range(0,9))))
 for i in range(0,9):
     
-    y = X[:,i].astype('float')
+    y = X1[:,i].astype('float')
     y = y.squeeze()
     
-    X = np.concatenate(X[:,range(0,i)], X[:,range(i+1, 9)]).astype(float)
+    X = np.concatenate((X1[:,range(0,i)], X1[:,range(i+1, 9)]), 1).astype('float')
+    # print(X)
     # X = X[:,range(0,i)].astype(float) ## select only metereologcal datas
     N,M = X.shape 
     
@@ -113,12 +114,12 @@ x=0
 for m1 in range(M):
     for m2 in range(M):
         subplot(M, M, m1*M + m2 + 1)
-        title('regularized linear regression (y: {})'.format(attributeNames[x]))
+        title('linear regression (y: {})'.format(attributeNames[x]))
         # print(train_err_vs_lambda)
         # print(test_err_vs_lambda)
         loglog(lambdas,train_err_vs_lambda[:,x].T,'b.-',lambdas,test_err_vs_lambda[:,x].T,'r.-')
-        xlabel('Regularization factor')
-        ylabel('Squared error (crossvalidation)')
+        # xlabel('Regularization factor')
+        # ylabel('Squared error (crossvalidation)')
         legend(['Train error','Validation error'])
         grid()
         if m1==M-1:
@@ -128,7 +129,7 @@ for m1 in range(M):
         if m2==0:
             ylabel('Squared error (crossvalidation)')
         else:
-            yticks([])
+            ylabel('')
         
         x+=1
     # subplot(1,2,2)

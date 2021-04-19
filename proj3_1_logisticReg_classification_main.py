@@ -20,11 +20,11 @@ font_size = 15
 plt.rcParams.update({'font.size': font_size})
 
 # y = X[:,9].astype('float')
-y = y.squeeze()
+y = y1.squeeze()
 # y = np.reshape(y,(244,1))
 print(y)
 
-X = X.squeeze()
+X = X1.squeeze()
 # X = X[:,range(0,8)].astype(float)
 X = X.astype(float)
 N, M = X.shape
@@ -57,6 +57,8 @@ lambda_interval = np.logspace(-8, 2, 50)
 train_error_rate = np.empty((K,1))
 test_error_rate = np.empty((K,1))
 coefficient_norm = np.empty((K,1))
+Error_train_nofeatures = np.empty((K,1))
+Error_test_nofeatures = np.empty((K,1))
 
 opt_lambdas = []
 for k, (train_index, test_index) in enumerate(CV.split(X,y)): 
@@ -77,7 +79,8 @@ for k, (train_index, test_index) in enumerate(CV.split(X,y)):
         y_est = 1
     Error_train_nofeatures[k] = np.sum(y_est != y_train) / len(y_train)
     Error_test_nofeatures[k] = np.sum(y_est != y_test) / len(y_test)
-
+    
+    #logistic regression for classification
     mdl = LogisticRegression(penalty='l2', C=1/opt_lambda_interval)
     
     mdl.fit(X_train, y_train)

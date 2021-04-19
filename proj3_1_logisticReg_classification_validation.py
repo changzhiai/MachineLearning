@@ -47,8 +47,8 @@ def LogReg_validate(X,y,lambda_interval,cvf=10):
    
         f=f+1
     
-    opt_val_err = np.min(np.mean(train_error_rate,axis=0))
-    opt_lambda_interval = lambda_interval[np.argmin(np.mean(train_error_rate,axis=0))]
+    opt_val_err = np.min(np.mean(test_error_rate,axis=0))
+    opt_lambda_interval = lambda_interval[np.argmin(np.mean(test_error_rate,axis=0))]
     train_err_vs_lambda = np.mean(train_error_rate,axis=0)
     test_err_vs_lambda = np.mean(test_error_rate,axis=0)
     mean_w_vs_lambda = np.squeeze(np.mean(coefficient_norm,axis=0))

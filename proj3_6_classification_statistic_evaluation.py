@@ -39,7 +39,7 @@ classNames = classNames
 C = len(classNames)
 
 # K-fold crossvalidation
-K = 10
+K = 5
 CV = model_selection.KFold(K, shuffle=True)
 
 # Initialize variables for baseline and logistic regression for classification
@@ -56,12 +56,14 @@ max_iter = 10000         # stop criterion 2 (max epochs in training)
 opt_val_errs = []
 opt_hidden_units = []
 errors = [] # make a list for storing generalizaition error in each loop
+error_rate = np.empty(K)
 
 yhat = []
 y_true = []
 rAB = []
 rBC = []
 rAC = []
+
 for k, (train_index, test_index) in enumerate(CV.split(X,y)):
     
     print('\nCrossvalidation fold: {0}/{1}'.format(k+1,K))
@@ -69,9 +71,9 @@ for k, (train_index, test_index) in enumerate(CV.split(X,y)):
     y_train = y[train_index]
     X_test = X[test_index]
     y_test = y[test_index]
-    y_true.append(y_test)
+    y_true.append(y_test.reshape(-1,1))
     
-    internal_cross_validation = 10
+    internal_cross_validation = 5
     
     ##### baseline for classification #####
     if y_train.tolist().count(0) > y_train.tolist().count(1):  
@@ -104,7 +106,7 @@ for k, (train_index, test_index) in enumerate(CV.split(X,y)):
     
     
     ##### ANN classification #####
-    n_hidden_units = range(1, 11)
+    n_hidden_units = range(1, 10)
     # internal_cross_validation = 10
     y_train = np.reshape(y_train,(-1,1))
     y_test = np.reshape(y_test,(-1,1))
@@ -147,8 +149,8 @@ for k, (train_index, test_index) in enumerate(CV.split(X,y)):
     y_test_ANN = y_test_tensor.type(dtype=torch.uint8)
 
     e = y_test_est != y_test_ANN
-    error_rate = (sum(e).type(torch.float)/len(y_test_ANN)).data.numpy()
-    errors.append(error_rate) # store error rate for current CV fold 
+    error_rate[k] = (sum(e).type(torch.float)/len(y_test_ANN)).data.numpy()
+    # errors.append(error_rate) # store error rate for current CV fold 
     
     yhatC = y_test_est.detach().numpy()
     
@@ -174,9 +176,9 @@ print('\n +++++++ logistic regression for classification output ++++++++')
 print('optimized intervel lambdas:', opt_lambdas)
 print('test errors', test_error_rate)
 
-print('\n +++++++ ANN regression for classification output ++++++++')
+print('\n +++++++ ANN classification output ++++++++')
 print('Optimized hidden units: {}'.format(opt_hidden_units))
-print('test errors: {}'.format(errors))
+print('test errors: {}'.format(error_rate))
 
 # setup II
 alpha = 0.05
@@ -186,8 +188,34 @@ p_BC_setupII, CI_BC_setupII = correlated_ttest(rBC, rho, alpha=alpha)
 p_AC_setupII, CI_AC_setupII = correlated_ttest(rAC, rho, alpha=alpha)
 
 print('\n +++++++ p value and confidence intervel ++++++++')
-print('\n Baseline vs. logistic regression: {},\n {}'.format(p_AB_setupII, CI_AB_setupII))
-print('\n logistic regression vs. ANN regression: {},\n {}'.format(p_BC_setupII, CI_BC_setupII))
-print('\n Baseline vs ANN regression: {},{}'.format(p_AC_setupII, CI_AC_setupII))
+print('Baseline vs. logistic regression: {},\n {}'.format(p_AB_setupII, CI_AB_setupII))
+print('logistic regression vs. ANN regression: {},\n {}'.format(p_BC_setupII, CI_BC_setupII))
+print('Baseline vs ANN regression: {},{}'.format(p_AC_setupII, CI_AC_setupII))
+
+# setup I
+alpha = 0.05
+y_true = np.concatenate(y_true)[:,0]
+yhat = np.concatenate(yhat)
+
+zA = np.abs(y_true - yhat[:,0] ) ** loss
+zB = np.abs(y_true - yhat[:,1] ) ** loss
+zC = np.abs(y_true - yhat[:,2] ) ** loss
+zAB = zA - zB
+zBC = zB - zC
+zAC = zA - zC
+
+CI_AB_setupI = st.t.interval(1 - alpha, len(zAB) - 1, loc=np.mean(zAB), scale=st.sem(zAB))  # Confidence interval
+p_AB_setupI = st.t.cdf(-np.abs(np.mean(zAB)) / st.sem(zAB), df=len(zAB) - 1)  # p-value
+
+CI_BC_setupI = st.t.interval(1 - alpha, len(zBC) - 1, loc=np.mean(zBC), scale=st.sem(zBC))  # Confidence interval
+p_BC_setupI = st.t.cdf(-np.abs(np.mean(zBC)) / st.sem(zBC), df=len(zBC) - 1)  # p-value
+
+CI_AC_setupI = st.t.interval(1 - alpha, len(zAC) - 1, loc=np.mean(zAC), scale=st.sem(zAC))  # Confidence interval
+p_AC_setupI = st.t.cdf(-np.abs(np.mean(zAC)) / st.sem(zAC), df=len(zAC) - 1)  # p-value
+
+print('\n +++++++ p value and confidence intervel for setup I ++++++++')
+print('Baseline vs. linear regression: {},\n {}'.format(p_AB_setupI, CI_AB_setupI))
+print('linear regression vs. ANN regression: {},\n {}'.format(p_BC_setupI, CI_BC_setupI))
+print('Baseline vs ANN regression: {},{}'.format(p_AC_setupI, CI_AC_setupI))
 
 
