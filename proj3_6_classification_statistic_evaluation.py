@@ -39,7 +39,7 @@ classNames = classNames
 C = len(classNames)
 
 # K-fold crossvalidation
-K = 5
+K = 10
 CV = model_selection.KFold(K, shuffle=True)
 
 # Initialize variables for baseline and logistic regression for classification
@@ -73,7 +73,7 @@ for k, (train_index, test_index) in enumerate(CV.split(X,y)):
     y_test = y[test_index]
     y_true.append(y_test.reshape(-1,1))
     
-    internal_cross_validation = 5
+    internal_cross_validation = 10
     
     ##### baseline for classification #####
     if y_train.tolist().count(0) > y_train.tolist().count(1):  
@@ -106,7 +106,7 @@ for k, (train_index, test_index) in enumerate(CV.split(X,y)):
     
     
     ##### ANN classification #####
-    n_hidden_units = range(1, 10)
+    n_hidden_units = range(1, 11)
     # internal_cross_validation = 10
     y_train = np.reshape(y_train,(-1,1))
     y_test = np.reshape(y_test,(-1,1))

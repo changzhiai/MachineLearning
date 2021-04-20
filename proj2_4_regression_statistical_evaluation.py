@@ -19,11 +19,11 @@ from scipy import stats
 from proj2_3_ANN_regression_validation import ANN_validate
 from toolbox_02450 import *
 
-y = X[:,9].astype('float')
+y = X2[:,9].astype('float')
 y = y.squeeze()
 
-X = X[:,range(0,9)].astype(float) ## select only metereologcal datas
-N,M = X.shape 
+X = X2[:,range(0,9)].astype(float) ## select only metereologcal datas
+N,M = X.shape
 #normalizing matrix
 X = X - np.ones((N,1)) * X.mean(axis=0)
 X = X*(1/np.std(X,axis=0))
@@ -37,7 +37,7 @@ M = M+1
 attributeNames = attributeNames1[range(0,9)].tolist()
 
 ## Crossvalidation
-K = 5
+K = 10
 CV = model_selection.KFold(K, shuffle=True)
 
 # Initialize variables for linear regression
@@ -54,7 +54,7 @@ w_noreg = np.empty((M,K))
 opt_lambdas = []
 
 # Initialize variables for baseline and ANN regression
-n_hidden_units = range(1, 10)
+n_hidden_units = range(1, 11)
 
 n_replicates = 2        # number of networks trained in each k-fold
 max_iter = 10000         # stop criterion 2 (max epochs in training)
@@ -79,7 +79,7 @@ for train_index, test_index in CV.split(X,y):
     y_test = y[test_index]
     y_true.append(y_test.reshape(-1,1))
     
-    internal_cross_validation = 5
+    internal_cross_validation = 10
     
     mu[k, :] = np.mean(X_train[:, 1:], 0)
     sigma[k, :] = np.std(X_train[:, 1:], 0)
