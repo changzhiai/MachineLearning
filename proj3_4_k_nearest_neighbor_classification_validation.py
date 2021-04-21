@@ -35,7 +35,7 @@ def KNN_validate(X,y,L,cvf=10):
             knclassifier = KNeighborsClassifier(n_neighbors=l);
             knclassifier.fit(X_train, y_train);
             y_est = knclassifier.predict(X_test);
-            errors[f,l-1] = np.sum(y_est[0]!=y_test[0])
+            errors[f,l-1] = np.sum(y_est[0]!=y_test[0])/N
         
         f=f+1
     
