@@ -15,6 +15,7 @@ Y1 = X1 - np.ones((N,1)) * X1.mean(axis=0)
 
 #normalizing matrix
 Y1 = Y1*(1/np.std(Y1.astype(float),axis=0))
+# Y1 = Y1*(1/np.std(Y1.astype(float),axis=0))
 
 # PCA by computing SVD of Y
 U1,S1,V1 = svd(Y1.astype(np.float),full_matrices=False)
@@ -49,6 +50,7 @@ Y2 = X2 - np.ones((N,1)) * X2.mean(axis=0)
 
 #normalizing matrix
 Y2 = Y2*(1/np.std(Y2.astype(float),axis=0))
+# Y2 = Y2*(1/np.std(Y2.astype(float),axis=0))
 
 # PCA by computing SVD of Y
 U2,S2,V2 = svd(Y2.astype(np.float),full_matrices=False)
