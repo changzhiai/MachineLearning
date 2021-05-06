@@ -16,12 +16,62 @@ a10 = [850, 125, 51, 700, 150, 1375, 1450, 350, 450, 0]
 x1 = np.linalg.norm(np.asarray(a6) - np.asarray(a8))
 y1 = np.linalg.norm(np.asarray(a6) - np.asarray(a9))
 z1 = np.linalg.norm(np.asarray(a6) - np.asarray(a10))
-print((x1+y1+z1)/3.)
+print(x1)
 
 
 x2 = np.linalg.norm(np.asarray(a7) - np.asarray(a8))
 y2 = np.linalg.norm(np.asarray(a7) - np.asarray(a9))
 z2 = np.linalg.norm(np.asarray(a7) - np.asarray(a10))
-print((x2+y2+z2)/3.)
+print(x2)
 
 print((x1+y1+z1+x2+y2+z2)/6.0)
+
+# -------------------AdaBoost classier------------------
+print('\n===============start AdaBoost classier================')
+from math import e
+sigmat = 1./7  # errors
+wt = 1./7
+at = 1./2 * np.log((1-sigmat)/sigmat)
+
+# for correct
+wt1_t = wt * e**(-at)
+
+# for incorrect
+wt1_t_in = wt * e**(at)
+wt1 = wt1_t_in/[(1-sigmat)* e**(-at) + sigmat* e**(at)]
+
+print(wt1_t)
+print(wt1_t_in)
+
+print('update weights for misclassified observations:{}'.format(wt1))
+
+
+
+# -------------------sigma function------------------
+print('\n===============start sigma function================')
+from math import e
+print(e)
+x= 418.94-26.12*16
+y = 1/(1+e**(-x))
+print(y)
+
+
+# -------------------GMM function------------------
+print('\n===============start GMM function================')
+
+# w1=0.37
+# sigma1 = np.sqrt(0.09)
+# xx = 6.9
+# mu1 = 6.12
+# w1=0.29
+# sigma1 = np.sqrt(0.13)
+# xx = 6.9
+# mu1 = 6.55
+w1=0.32
+sigma1 = 1.1354
+xx = 15.38
+mu1 = 18.421
+p1 = w1 * 1/(np.sqrt(2*np.pi*sigma1**2))*e**(-1/(2*sigma1**2)*np.square(xx - mu1))
+print(p1)
+
+
