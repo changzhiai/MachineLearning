@@ -8,7 +8,7 @@ import numpy as np
 
 # ------------------- PCA ------------------
 print('\n=============== PCA calculation ================')
-sig = [19.64, 6.87, 3.26, 2.30, 1.12]
+sig = [14.4, 8.19, 7.83, 6.91, 6.01]
 SumOfSquare = sum(j*j for j in sig)
 print(SumOfSquare)
 pca = np.zeros(len(sig))
@@ -66,7 +66,8 @@ print('update weights for misclassified observations:{}'.format(wt1))
 print('\n===============start sigma function================')
 from math import e
 print(e)
-x= 418.94-26.12*16
+# x= 418.94-26.12*16
+x = -0.93
 y = 1/(1+e**(-x))
 print(y)
 
@@ -82,11 +83,14 @@ print('\n===============start GMM function================')
 # sigma1 = np.sqrt(0.13)
 # xx = 6.9
 # mu1 = 6.55
-w1=0.32
-sigma1 = 1.1354
-xx = 15.38
-mu1 = 18.421
+w1=0.333333333
+mu1 = 6.93
+sigma1 = np.sqrt(0.12)
+xx = 6.9
+
 p1 = w1 * 1/(np.sqrt(2*np.pi*sigma1**2))*e**(-1/(2*sigma1**2)*np.square(xx - mu1))
 print(p1)
 
-
+# print(0.3333333 * 1/((2*np.pi*0.5**2)**5)*e**(-1/(2*0.5**2)*np.square(2.11)))
+# print(0.3333333 * 1/((2*np.pi*0.5**2)**5)*e**(-1/(2*0.5**2)*np.square(1.15)))
+# print(0.3333333 * 1/((2*np.pi*0.5**2)**5)*e**(-1/(2*0.5**2)*np.square(1.09)))
