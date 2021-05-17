@@ -8,7 +8,7 @@ import numpy as np
 
 # ------------------- PCA ------------------
 print('\n=============== PCA calculation ================')
-sig = [14.4, 8.19, 7.83, 6.91, 6.01]
+sig = [149, 118, 53, 42, 3]
 SumOfSquare = sum(j*j for j in sig)
 print(SumOfSquare)
 pca = np.zeros(len(sig))
@@ -90,7 +90,26 @@ xx = 6.9
 
 p1 = w1 * 1/(np.sqrt(2*np.pi*sigma1**2))*e**(-1/(2*sigma1**2)*np.square(xx - mu1))
 print(p1)
-
 # print(0.3333333 * 1/((2*np.pi*0.5**2)**5)*e**(-1/(2*0.5**2)*np.square(2.11)))
 # print(0.3333333 * 1/((2*np.pi*0.5**2)**5)*e**(-1/(2*0.5**2)*np.square(1.15)))
 # print(0.3333333 * 1/((2*np.pi*0.5**2)**5)*e**(-1/(2*0.5**2)*np.square(1.09)))
+
+
+# -------------------similarity------------------
+print('\n===============start similarity================')
+
+from similarity import similarity
+
+x_vec = np.array([1, 0, 1, 0, 0, 1])
+y_vec = np.array([1, 0, 1, 0, 1, 0])
+
+print('Norm of x_vec-y_vec:',np.linalg.norm(x_vec-y_vec,1))
+print('Norm of x_vec-y_vec:',np.linalg.norm(x_vec-y_vec,2))
+
+# Similarity: 'SMC', 'Jaccard', 'ExtendedJaccard', 'Cosine', 'Correlation' 
+print('Jaccard:',similarity(x_vec,y_vec,'Jaccard'))
+print('SMC:',similarity(x_vec,y_vec,'SMC'))
+print('Cos:',similarity(x_vec,y_vec,'cos'))
+# print(similarity(x_vec,y_vec,'ext'))
+# print(similarity(x_vec,y_vec,'cor'))
+print('Ran Exercise 3.2.2')
