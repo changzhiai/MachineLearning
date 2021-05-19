@@ -115,3 +115,22 @@ print('Cos:',similarity(x_vec,y_vec,'cos'))
 # print(similarity(x_vec,y_vec,'ext'))
 # print(similarity(x_vec,y_vec,'cor'))
 print('Ran Exercise 3.2.2')
+
+# -------------------Kernel density estimator------------------
+print('\n=============== Kernel Density Estimator================')
+xxx = 3.918
+mu11 = [-6.35 , -2.677, -3.003]
+sigma11 = 2
+sum = 0
+for mu_i in mu11:
+    sum += 1/(np.sqrt(2*np.pi*sigma11**2))*e**(-1/(2*sigma11**2)*np.square(xxx - mu_i))
+p_xxx = sum/len(mu11)
+print('sum:', sum)
+print('p_xxx:', p_xxx)
+
+#Spring2019(25)
+#1/4*(-np.log(p_xxx1)-np.log(p_xxx2)-np.log(p_xxx3)-np.log(p_xxx4))
+#1/4*(-np.log(0.0004565)-np.log(0.029)-np.log(0.078)-np.log(0.082))
+
+
+
