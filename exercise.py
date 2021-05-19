@@ -44,7 +44,7 @@ print('The variance explained by the first four principal components:{}'.format(
 # -------------------AdaBoost classier------------------
 print('\n===============start AdaBoost classier================')
 from math import e
-sigmat = 1./7  # errors
+sigmat = 5./7  # errors
 wt = 1./7
 at = 1./2 * np.log((1-sigmat)/sigmat)
 
@@ -83,10 +83,10 @@ print('\n===============start GMM function================')
 # sigma1 = np.sqrt(0.13)
 # xx = 6.9
 # mu1 = 6.55
-w1=0.333333333
-mu1 = 6.93
-sigma1 = np.sqrt(0.12)
-xx = 6.9
+w1=0.48
+mu1 = 3.184
+sigma1 = 0.0075
+xx = 3.19
 
 p1 = w1 * 1/(np.sqrt(2*np.pi*sigma1**2))*e**(-1/(2*sigma1**2)*np.square(xx - mu1))
 print(p1)
@@ -102,6 +102,8 @@ from similarity import similarity
 
 x_vec = np.array([1, 0, 1, 0, 0, 1])
 y_vec = np.array([1, 0, 1, 0, 1, 0])
+# x_vec = np.array([1, 1, 0, 0])
+# y_vec = np.array([1, 1, 0, 1])
 
 print('Norm of x_vec-y_vec:',np.linalg.norm(x_vec-y_vec,1))
 print('Norm of x_vec-y_vec:',np.linalg.norm(x_vec-y_vec,2))
