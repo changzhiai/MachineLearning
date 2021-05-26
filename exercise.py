@@ -55,11 +55,13 @@ wt1_t = wt * e**(-at)
 wt1_t_in = wt * e**(at)
 wt1 = wt1_t_in/[(1-sigmat)* e**(-at) + sigmat* e**(at)]
 
+wt2 = wt1_t/[(1-sigmat)* e**(-at) + sigmat* e**(at)]
+
 print(wt1_t)
 print(wt1_t_in)
 
 print('update weights for misclassified observations:{}'.format(wt1))
-
+print('update weights for classified observations:{}'.format(wt2))
 
 
 # -------------------sigma function------------------
@@ -116,6 +118,7 @@ print('Cos:',similarity(x_vec,y_vec,'cos'))
 # print(similarity(x_vec,y_vec,'cor'))
 print('Ran Exercise 3.2.2')
 
+
 # -------------------Kernel density estimator------------------
 print('\n=============== Kernel Density Estimator================')
 xxx = 3.918
@@ -133,4 +136,21 @@ print('p_xxx:', p_xxx)
 #1/4*(-np.log(0.0004565)-np.log(0.029)-np.log(0.078)-np.log(0.082))
 
 
+##### In case 
+# np.log2(x)
 
+# import math
+# number = 74088  # = 42**3
+# base = 42
+# exponent = math.log(number, base)  # = 3
+
+x222 = np.array([39, 415, -7, -6727, 143])
+y333 = np.array([0, -7, 1, 108, -2])
+# np.std(x222)
+# np.std(y333)
+# np.mean(x222)
+# np.mean(y333)
+print(x222-x222.mean())*(y333-y333.mean())/((x222.std())*(y333.std()))
+
+# array([ 1266.4,  1642.4,  1220.4, -5499.6,  1370.4])
+# array([-20., -27., -19.,  88., -22.])
