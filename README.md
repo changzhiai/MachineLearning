@@ -1,37 +1,12 @@
 # Machine Learning
-1.
-2.
-3.
-4.
-5.
-6.
-7.
-8.
-9.
-10.
-11.
-12.
-13.
-14.
-15.
-16.
-17.
-18.
-19.
-20.
-21.
-22.
-23.
-24.
-25.
-26.
-27.
-28.
-29.
-30.
-31.
-32.
-33.
-34.
-35.
-36.
+- Data, feature extraction and PCA
+- Measures of similarity, summary statistics and probabilities
+- Probability densities and data visualization
+- Decision trees and linear regression
+- Overfitting, cross-validation and Nearest Neighbor
+- Performance evaluation, Bayes, and Naive Bayes
+- Artificial Neural Networks and Bias/Variance
+- AUC and ensemble methods
+- K-means and hierarchical clustering
+- Mixture models and density estimation
+- Association mining
