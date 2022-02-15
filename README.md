@@ -1,0 +1,12 @@
+# Machine Learning
+- Data, feature extraction and PCA
+- Measures of similarity, summary statistics and probabilities
+- Probability densities and data visualization
+- Decision trees and linear regression
+- Overfitting, cross-validation and Nearest Neighbor
+- Performance evaluation, Bayes, and Naive Bayes
+- Artificial Neural Networks and Bias/Variance
+- AUC and ensemble methods
+- K-means and hierarchical clustering
+- Mixture models and density estimation
+- Association mining
